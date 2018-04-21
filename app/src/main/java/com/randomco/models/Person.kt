@@ -7,21 +7,27 @@ data class Person(
     val picture: Picture,
     val phone: String,
     val gender: Gender,
-    val location: LatLng
-)
+    val favorite: Boolean,
+    val location: Location
+) {
+    /**
+     * Unique identifier for a person, let's assume the email works
+     */
+    val id get() = email
+}
 
 enum class Gender {
-    MALE, FEMALE, OTHER //ATTACK_HELICOPTER
+    MALE, FEMALE, OTHER //ATTACK_HELICOPTER?
 }
 
 data class Location(
     val street: String,
     val city: String,
     val state: String,
-    val position: LatLng
+    val latLon: LatLon
 )
 
-data class LatLng(val latitude: Float, val longitude: Float) {
+data class LatLon(val latitude: Float, val longitude: Float) {
     companion object {
         private const val EARTH_RAD_KM = 6371
     }
@@ -30,8 +36,9 @@ data class LatLng(val latitude: Float, val longitude: Float) {
      * Somewhat accurate distanceTo calculation, from
      * https://www.movable-type.co.uk/scripts/latlong.html
      */
-    infix fun distanceTo(other: LatLng): Float {
+    infix fun distanceTo(other: LatLon): Float {
         fun toRad(deg: Float) = deg * (Math.PI / 180)
+
         val lat1 = this.latitude
         val lat2 = other.latitude
         val lon1 = this.longitude
@@ -47,6 +54,6 @@ data class LatLng(val latitude: Float, val longitude: Float) {
 }
 
 data class Picture(
-    val small: String,
+    val thumb: String,
     val big: String
 )

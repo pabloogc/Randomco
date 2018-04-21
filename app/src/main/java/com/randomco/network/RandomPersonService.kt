@@ -16,14 +16,16 @@ import javax.inject.Inject
 
 data class HttpException(val response: Response) : IOException()
 
-interface RandomService {
+interface RandomPersonService {
     fun fetchPersons(@IntRange(from = 1) count: Int): Single<NetworkPersonList>
 }
 
-class RandomServiceImpl @Inject constructor(val client: OkHttpClient,
-                                            val moshi: Moshi) : RandomService {
+class RandomPersonServiceImpl @Inject constructor(val client: OkHttpClient,
+                                                  val moshi: Moshi) : RandomPersonService {
 
     override fun fetchPersons(count: Int): Single<NetworkPersonList> {
+        //This could be done with Retrofit or something similar, but for
+        //a single request this looks ok
         return Single.create { emitter ->
             val request = Request.Builder()
                 .url(HttpUrl.Builder()
@@ -67,5 +69,5 @@ class NetworkModule {
     }
 
     @Provides @AppScope
-    fun provideRandomService(impl: RandomServiceImpl): RandomService = impl
+    fun provideRandomService(impl: RandomPersonServiceImpl): RandomPersonService = impl
 }

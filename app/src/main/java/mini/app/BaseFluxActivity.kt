@@ -1,15 +1,17 @@
 package mini.app
 
-import android.annotation.SuppressLint
 import dagger.android.support.DaggerAppCompatActivity
 import mini.flux.DefaultSubscriptionTracker
+import mini.flux.Dispatcher
 import mini.flux.SubscriptionTracker
+import javax.inject.Inject
 
 /** Base [Activity] to use with Flux+Dagger in the app. */
-@SuppressLint("Registered")
 abstract class BaseFluxActivity :
     DaggerAppCompatActivity(),
     SubscriptionTracker by DefaultSubscriptionTracker() {
+
+    @Inject lateinit var dispatcher: Dispatcher
 
     override fun onDestroy() {
         super.onDestroy()

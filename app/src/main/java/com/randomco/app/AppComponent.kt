@@ -23,6 +23,7 @@ import mini.log.LoggerModule
     AndroidBindingsModule::class,
     AppModule::class,
     LoggerModule::class,
+    PersonsModule::class,
     NetworkModule::class
 ])
 

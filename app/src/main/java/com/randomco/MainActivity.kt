@@ -1,35 +1,36 @@
 package com.randomco
 
 import android.os.Bundle
-import com.randomco.network.RandomService
+import com.randomco.app.LoadPersonsAction
+import com.randomco.app.PersonStore
 import com.randomco.randomco.R
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import mini.app.BaseFluxActivity
-import mini.extensions.showToast
-import timber.log.Timber
+import mini.extensions.select
 import javax.inject.Inject
+
+const val PERSONS_TO_LOAD = 40
 
 class MainActivity : BaseFluxActivity() {
 
-    @Inject lateinit var randomService: RandomService
+    @Inject lateinit var personsStore: PersonStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        randomService.fetchPersons(40)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { persons ->
-                    showToast("${persons.results}")
-                    Timber.d("${persons.results}")
-                },
-                { error ->
-                    error.printStackTrace()
-                    showToast(error.message.toString())
-                }
-            ).track()
+        if (personsStore.state.persons == null) {
+            dispatcher.dispatch(LoadPersonsAction(PERSONS_TO_LOAD))
+        }
+
+        personsStore.flowable()
+            .select { it.persons }
+            .subscribe {
+                text.text = "${it.count()}"
+            }
+
+        text.setOnClickListener {
+            dispatcher.dispatch(LoadPersonsAction(PERSONS_TO_LOAD))
+        }
     }
 }
