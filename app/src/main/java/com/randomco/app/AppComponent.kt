@@ -17,6 +17,7 @@ import mini.dagger.AppScope
 import mini.flux.Dispatcher
 import mini.flux.StoreHolderComponent
 import mini.log.LoggerModule
+import mini.test.TestFragmentActivity
 
 @Component(modules = [
     AndroidInjectionModule::class,
@@ -39,7 +40,10 @@ interface AndroidBindingsModule {
     fun mainActivity(): MainActivity
 
     @ActivityScope @ContributesAndroidInjector
-    fun PersonsFragment(): PersonsFragment
+    fun personsFragment(): PersonsFragment
+
+    @ActivityScope @ContributesAndroidInjector
+    fun testFragmentActivity(): TestFragmentActivity
 }
 
 @Module

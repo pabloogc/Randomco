@@ -8,6 +8,7 @@ import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 import mini.dagger.AppScope
 import mini.flux.Action
+import mini.flux.Dispatcher
 import mini.flux.Store
 import mini.misc.Task
 import mini.misc.taskIdle
@@ -29,6 +30,7 @@ data class UpdateFilterAction(val filter: PersonsFilter) : Action
 
 @AppScope
 class PersonsStore @Inject constructor(
+    private val dispatcher: Dispatcher,
     private val personController: PersonController) : Store<PersonState>() {
 
     override fun init() {

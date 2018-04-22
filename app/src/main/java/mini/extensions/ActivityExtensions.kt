@@ -2,10 +2,17 @@ package mini.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.support.annotation.StringRes
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+
+/**
+ * Retrieve an argument from the [Intent] extras map in an [Activity].
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> Activity.argument(key: String): Lazy<T> = lazy { this.intent.extras[key] as T }
 
 /**
  * Displays a text as a toast in the current activity.

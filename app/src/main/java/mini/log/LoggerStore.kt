@@ -9,6 +9,7 @@ import mini.app.OnActivityLifeCycleAction
 import mini.app.OnActivityLifeCycleAction.ActivityStage.DESTROYED
 import mini.app.OnActivityLifeCycleAction.ActivityStage.STOPPED
 import mini.dagger.AppScope
+import mini.flux.Dispatcher
 import mini.flux.LazyStoreMap
 import mini.flux.Store
 import timber.log.Timber
@@ -18,7 +19,8 @@ import javax.inject.Inject
  * Store that tracks logging throughout the app.
  */
 @AppScope
-class LoggerStore @Inject constructor(private val lazyStoreMap: LazyStoreMap) : Store<LoggerState>() {
+class LoggerStore @Inject constructor(private val dispatcher: Dispatcher,
+                                      private val lazyStoreMap: LazyStoreMap) : Store<LoggerState>() {
 
     private val fileLogController = FileLogController(app)
     override fun initialState() = LoggerState()

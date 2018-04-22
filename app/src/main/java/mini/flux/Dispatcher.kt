@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
 /**
  * Dispatch actions and subscribe to them in order to produce changes.
  */
-class Dispatcher {
+class Dispatcher(private val checkThreads: Boolean = true) {
     companion object {
         const val DEFAULT_PRIORITY: Int = 100
     }
@@ -72,7 +72,7 @@ class Dispatcher {
      * Dispatches an action to any store.
      */
     fun dispatch(action: Action) {
-        assertOnUiThread()
+        if (checkThreads) assertOnUiThread()
         synchronized(this) {
             try {
                 if (dispatching) error("Can't dispatch actions while reducing state!")

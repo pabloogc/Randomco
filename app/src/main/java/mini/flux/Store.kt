@@ -1,6 +1,5 @@
 package mini.flux
 
-import android.os.Looper
 import android.support.annotation.CallSuper
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -8,7 +7,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.processors.PublishProcessor
 import org.jetbrains.annotations.TestOnly
 import java.lang.reflect.ParameterizedType
-import javax.inject.Inject
 
 /**
  * Generic store that exposes its state as a [Flowable] and emits change events
@@ -19,9 +17,6 @@ import javax.inject.Inject
 abstract class Store<S : Any> : AutoCloseable {
 
     open val properties: StoreProperties = StoreProperties()
-
-    @Inject
-    protected lateinit var dispatcher: Dispatcher
 
     private val disposables = CompositeDisposable()
     private var _state: S? = null
@@ -81,12 +76,8 @@ abstract class Store<S : Any> : AutoCloseable {
      */
     @TestOnly
     fun setTestState(other: S) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
+        onUiSync {
             this.state = other
-        } else {
-            onUiSync {
-                this.state = other
-            }
         }
     }
 
