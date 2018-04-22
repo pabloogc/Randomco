@@ -1,5 +1,6 @@
 package com.randomco.models
 
+import com.randomco.models.LatLon.Companion.MADRID
 import com.randomco.network.NetworkPerson
 
 
@@ -30,7 +31,6 @@ class PersonMapper {
     }
 
     private fun generateRandomLocation(): LatLon {
-        val madrid = LatLon(40.4742675f, -3.68750f)
         val distanceFactor = if (Math.random() > 0.5) {
             0.00001f //Generate a really close one
         } else {
@@ -42,8 +42,8 @@ class PersonMapper {
         val extraLon = Math.random().toFloat() * deviation * 2 - deviation
 
         return LatLon(
-            latitude = madrid.latitude + (extraLat + distanceFactor),
-            longitude = madrid.longitude + (extraLon + distanceFactor)
+            latitude = MADRID.latitude + (extraLat * distanceFactor),
+            longitude = MADRID.longitude + (extraLon * distanceFactor)
         )
     }
 }

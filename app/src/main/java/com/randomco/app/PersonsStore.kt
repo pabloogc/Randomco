@@ -1,6 +1,7 @@
 package com.randomco.app
 
 import com.randomco.models.Person
+import com.randomco.models.PersonsFilter
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 data class PersonState(
     val persons: List<Person>? = null,
-    val personsTask: Task = taskIdle()
+    val loadPersonsTask: Task = taskIdle(),
+    val activeFilter: PersonsFilter = PersonsFilter()
 )
 
 
@@ -23,15 +25,16 @@ data class LoadPersonsAction(val count: Int) : Action
 data class PersonsLoadedAction(val persons: List<Person>?, val loadTask: Task) : Action
 data class DeletePersonAction(val person: Person) : Action
 data class TogglePersonFavAction(val person: Person) : Action
+data class UpdateFilterAction(val filter: PersonsFilter) : Action
 
 @AppScope
-class PersonStore @Inject constructor(
+class PersonsStore @Inject constructor(
     private val personController: PersonController) : Store<PersonState>() {
 
     override fun init() {
         dispatcher.subscribe(LoadPersonsAction::class) {
-            if (state.personsTask.isRunning()) return@subscribe
-            state = state.copy(personsTask = taskRunning())
+            if (state.loadPersonsTask.isRunning()) return@subscribe
+            state = state.copy(loadPersonsTask = taskRunning())
             personController.loadPersons(count = it.count)
         }
 
@@ -45,7 +48,7 @@ class PersonStore @Inject constructor(
             }
             state = state.copy(
                 persons = newPersons,
-                personsTask = it.loadTask
+                loadPersonsTask = it.loadTask
             )
         }
 
@@ -67,6 +70,10 @@ class PersonStore @Inject constructor(
                 }
             )
         }
+
+        dispatcher.subscribe(UpdateFilterAction::class) {
+            state = state.copy(activeFilter = it.filter)
+        }
     }
 }
 
@@ -74,8 +81,8 @@ class PersonStore @Inject constructor(
 @Module
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 interface PersonsModule {
-    @Binds @AppScope @IntoMap @ClassKey(PersonStore::class)
-    fun storeToMap(store: PersonStore): Store<*>
+    @Binds @AppScope @IntoMap @ClassKey(PersonsStore::class)
+    fun storeToMap(store: PersonsStore): Store<*>
 
     @Binds @AppScope
     fun personController(personControllerImpl: PersonControllerImpl): PersonController

@@ -2,7 +2,8 @@ package com.randomco.app
 
 import android.app.Application
 import android.content.Context
-import com.randomco.MainActivity
+import com.randomco.home.MainActivity
+import com.randomco.home.PersonsFragment
 import com.randomco.network.NetworkModule
 import dagger.Component
 import dagger.Module
@@ -36,6 +37,9 @@ interface AppComponent : StoreHolderComponent, AndroidInjector<App> {
 interface AndroidBindingsModule {
     @ActivityScope @ContributesAndroidInjector
     fun mainActivity(): MainActivity
+
+    @ActivityScope @ContributesAndroidInjector
+    fun PersonsFragment(): PersonsFragment
 }
 
 @Module

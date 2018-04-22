@@ -16,4 +16,8 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
+    <style name="AppTheme.CheckBox">
+
+    </style>
+
 </resources>

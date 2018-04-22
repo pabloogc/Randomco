@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Randomco</string>
+    <string name="load_more">Load More</string>
+    <string name="search">Search</string>
+    <string name="sort_by_gender">Sort by gender</string>
+    <string name="sort_by_name">Sort by name</string>
+    <string name="close_to_me">Close to me</string>
 </resources>

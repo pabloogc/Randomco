@@ -30,6 +30,7 @@ data class Location(
 data class LatLon(val latitude: Float, val longitude: Float) {
     companion object {
         private const val EARTH_RAD_KM = 6371
+        val MADRID = LatLon(40.4742675f, -3.68750f)
     }
 
     /**
