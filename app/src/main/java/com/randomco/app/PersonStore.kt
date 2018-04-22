@@ -18,8 +18,11 @@ data class PersonState(
     val personsTask: Task = taskIdle()
 )
 
+
 data class LoadPersonsAction(val count: Int) : Action
 data class PersonsLoadedAction(val persons: List<Person>?, val loadTask: Task) : Action
+data class DeletePersonAction(val person: Person) : Action
+data class TogglePersonFavAction(val person: Person) : Action
 
 @AppScope
 class PersonStore @Inject constructor(
@@ -43,6 +46,25 @@ class PersonStore @Inject constructor(
             state = state.copy(
                 persons = newPersons,
                 personsTask = it.loadTask
+            )
+        }
+
+        dispatcher.subscribe(DeletePersonAction::class) {
+            val toDelete = it.person
+            state = state.copy(
+                persons = state.persons?.filter { it != toDelete }
+            )
+        }
+
+        //This could be a generic UpdatePersonAction, matching by id and replacing
+        //the element
+        dispatcher.subscribe(TogglePersonFavAction::class) {
+            val toUpdate = it.person
+            state = state.copy(
+                persons = state.persons?.map {
+                    if (it == toUpdate) it.copy(favorite = !it.favorite)
+                    else it
+                }
             )
         }
     }
