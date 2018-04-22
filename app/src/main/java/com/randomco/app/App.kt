@@ -42,8 +42,8 @@ class App : DaggerApplication() {
         FluxUtil.initStores(stores.values.toList())
         FluxUtil.registerSystemCallbacks(component.dispatcher(), this)
 
-        val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-        exceptionHandlers.add(exceptionHandler)
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        exceptionHandlers.add(defaultHandler)
         Thread.setDefaultUncaughtExceptionHandler { thread, error ->
             exceptionHandlers.forEach { it.uncaughtException(thread, error) }
         }

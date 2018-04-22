@@ -15,20 +15,27 @@ import mini.app.BaseFluxFragment
 import mini.extensions.select
 import javax.inject.Inject
 
+/**
+ * Display all, or only the ones marked as favorite.
+ */
+enum class PersonsFilterMode {
+    ALL, ONLY_FAV
+}
+
 class PersonsFragment : BaseFluxFragment() {
 
     companion object {
-        private const val ARG_ONLY_FAV = "onlyFav"
-        fun newInstance(onlyFav: Boolean = false): PersonsFragment {
+        private const val ARG_FILTER_MODE = "filterMode"
+        fun newInstance(filterMode: PersonsFilterMode = PersonsFilterMode.ALL): PersonsFragment {
             val args = Bundle().apply {
-                putBoolean(ARG_ONLY_FAV, onlyFav)
+                putInt(ARG_FILTER_MODE, filterMode.ordinal)
             }
             return PersonsFragment().apply { arguments = args }
         }
     }
 
     @Inject lateinit var personsStore: PersonsStore
-    private var onlyFav: Boolean = false
+    private lateinit var filterMode: PersonsFilterMode
 
     private val personActionsListener = object : PersonAdapter.PersonActionsListener {
         override fun onDeleteClick(person: Person) {
@@ -44,7 +51,7 @@ class PersonsFragment : BaseFluxFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onlyFav = arguments?.getBoolean(ARG_ONLY_FAV) ?: false
+        filterMode = PersonsFilterMode.values()[arguments?.getInt(ARG_FILTER_MODE) ?: 0]
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -55,16 +62,20 @@ class PersonsFragment : BaseFluxFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recycler.adapter = adapter
-        recycler.layoutManager = LinearLayoutManager(view.context,
-            LinearLayoutManager.VERTICAL, false)
+        recycler.layoutManager = LinearLayoutManager(
+            view.context,
+            LinearLayoutManager.VERTICAL,
+            false)
 
         personsStore.flowable()
             .filter { it.persons != null }
             .select { it.persons to it.activeFilter }
             .subscribe { (persons, filter) ->
                 adapter.items = filter(persons!!).run {
-                    if (onlyFav) filter { it.favorite }
-                    else this
+                    when (filterMode) {
+                        PersonsFilterMode.ONLY_FAV -> filter { it.favorite }
+                        else -> this
+                    }
                 }
                 adapter.notifyDataSetChanged()
             }

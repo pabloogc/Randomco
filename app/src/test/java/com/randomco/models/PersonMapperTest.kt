@@ -15,5 +15,4 @@ class PersonMapperTest {
         val mappedWithoutLatLon = mappedPerson.copy(location = mappedPerson.location.copy(latLon = anyLatLon))
         assertEquals(anyPerson, mappedWithoutLatLon)
     }
-
 }

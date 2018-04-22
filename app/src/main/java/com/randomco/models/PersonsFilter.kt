@@ -7,7 +7,6 @@ data class PersonsFilter(
     private val sortByGender: Boolean = false,
     private val sortByName: Boolean = false
 ) {
-
     operator fun invoke(persons: List<Person>): List<Person> {
         var out = persons
 

@@ -25,5 +25,4 @@ class LatLonTest {
         isClose(0.35f, c distanceTo d) //c - d are ~350 meters apart
         isClose(2.0f, c distanceTo e) //c - e are ~2000 meters apart
     }
-
 }

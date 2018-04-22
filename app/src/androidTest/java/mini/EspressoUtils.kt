@@ -45,8 +45,11 @@ fun <T : Fragment> testFragment(factory: () -> T): FragmentTestRule<T> {
     }
 }
 
+/**
+ * Takes the first match in case multiple views apply to avoid espresso crash, useful for lists
+ * with multiple items when we don't care what item are we selecting.
+ */
 fun first(expected: Matcher<View>): Matcher<View> {
-
     return object : TypeSafeMatcher<View>() {
         private var matched = false
 

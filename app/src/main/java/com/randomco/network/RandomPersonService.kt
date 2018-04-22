@@ -20,12 +20,12 @@ interface RandomPersonService {
     fun fetchPersons(@IntRange(from = 1) count: Int): Single<NetworkPersonList>
 }
 
-class RandomPersonServiceImpl @Inject constructor(val client: OkHttpClient,
-                                                  val moshi: Moshi) : RandomPersonService {
+class RandomPersonServiceImpl @Inject constructor(private val client: OkHttpClient,
+                                                  private val moshi: Moshi) : RandomPersonService {
 
     override fun fetchPersons(count: Int): Single<NetworkPersonList> {
         //This could be done with Retrofit or something similar, but for
-        //a single request this looks ok
+        //a single request seems looks ok
         return Single.create { emitter ->
             val request = Request.Builder()
                 .url(HttpUrl.Builder()

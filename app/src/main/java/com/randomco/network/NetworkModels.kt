@@ -1,5 +1,7 @@
 package com.randomco.network
 
+//Models from the json response
+
 data class NetworkPersonList(
     val results: List<NetworkPerson>
 )

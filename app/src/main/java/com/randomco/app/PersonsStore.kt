@@ -44,6 +44,9 @@ class PersonsStore @Inject constructor(
             val newPersons = if (it.loadTask.isSuccessful()) {
                 val prevList = state.persons ?: emptyList()
                 val appended = prevList + it.persons!!
+                //Remove duplicates by id, we could use equality too
+                //but since we are adding a random geolocation
+                //two persons never match
                 appended.distinctBy { it.id }
             } else {
                 state.persons
@@ -54,6 +57,11 @@ class PersonsStore @Inject constructor(
             )
         }
 
+        //Remove by id or object equality is equivalent
+        //in this case, since the person is immutable and
+        //only stored in this store, allowing deletion by
+        //id would be useful if the view uses mutable ViewModels
+        //for persons
         dispatcher.subscribe(DeletePersonAction::class) {
             val toDelete = it.person
             state = state.copy(

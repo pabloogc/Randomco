@@ -35,7 +35,7 @@ class MainActivity : BaseFluxActivity() {
         inflateMenu()
         configureFilters()
         configureLoadingFeedback()
-        attachFragments(savedInstanceState)
+        if (savedInstanceState == null) attachFragments()
 
     }
 
@@ -49,19 +49,17 @@ class MainActivity : BaseFluxActivity() {
             }
     }
 
-    private fun attachFragments(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            val isTablet = resources.getBoolean(R.bool.is_tablet)
-            if (isTablet) {
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.main_fragment_container, PersonsFragment.newInstance())
-                    .add(R.id.second_fragment_container, PersonsFragment.newInstance(onlyFav = true))
-                    .commit()
-            } else {
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.main_fragment_container, PersonsFragment.newInstance())
-                    .commit()
-            }
+    private fun attachFragments() {
+        val isTablet = resources.getBoolean(R.bool.is_tablet)
+        if (isTablet) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.main_fragment_container, PersonsFragment.newInstance())
+                .add(R.id.second_fragment_container, PersonsFragment.newInstance(filterMode = PersonsFilterMode.ONLY_FAV))
+                .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.main_fragment_container, PersonsFragment.newInstance())
+                .commit()
         }
     }
 
@@ -90,7 +88,7 @@ class MainActivity : BaseFluxActivity() {
             val filter = PersonsFilter(
                 textFilter = if (searchView.query.isNullOrBlank()) null else searchView.query.toString(),
                 distanceFilter = if (distance_checkbox.isChecked) 1.0f else null,
-                currentLocation = LatLon.MADRID, //TODO: Actual location?
+                currentLocation = LatLon.MADRID, //TODO: Actual location from GPS?
                 sortByGender = gender_sort_checkbox.isChecked,
                 sortByName = name_sort_checkbox.isChecked
             )
@@ -122,7 +120,7 @@ class MainActivity : BaseFluxActivity() {
                 return true
             }
         })
-        //TODO: Make filter view reactive
+        //TODO: Make filter view reactive, mapping PersonsFilter back to view state
     }
 }
 
